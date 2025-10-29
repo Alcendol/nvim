@@ -22,6 +22,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.shell = '/usr/bin/fish'
 require("vim-options")
 require("lazy").setup("plugins")
 print("Hello Mothafuckaaaa!!")
