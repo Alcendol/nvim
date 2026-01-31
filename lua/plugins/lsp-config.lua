@@ -9,7 +9,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        -- ensure_installed = { "lua_ls", "ts_ls", "csharp_ls", }
+        ensure_installed = { "lua_ls", "ts_ls", "csharp_ls", "tailwindcss", "html" },
         auto_install = true,
       })
     end
@@ -35,6 +35,34 @@ return {
         },
         capabilities = capabilities
       })
+      lspconfig.tailwindcss.setup({
+        capabilities = capabilities,
+        filetypes = {
+          "html",
+          "css",
+          "scss",
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+          "vue",
+          "svelte",
+        },
+        settings = {
+          tailwindCSS = {
+            validate = true,
+            lint = {
+              cssConflict = "warning",
+              invalidApply = "error",
+              invalidConfigPath = "error",
+              invalidScreen = "error",
+              invalidTailwindDirective = "error",
+              invalidVariant = "error",
+            },
+          },
+        },
+      })
+
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, {})
       vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, {})
