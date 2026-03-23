@@ -9,7 +9,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "ts_ls", "tailwindcss", "html" },
+        ensure_installed = { "lua_ls", "ts_ls", "tailwindcss", "html", "eslint" },
         auto_install = true,
       })
     end
@@ -19,49 +19,57 @@ return {
     config = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      local lspconfig = require("lspconfig")
-      lspconfig.html.setup({
-        capabilities = capabilities
-      })
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities
-      })
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities
-      })
-      lspconfig.csharp_ls.setup({
-        cmd_env = {
-          MSBUILD_EXE_PATH = "/usr/share/dotnet/sdk/8.0.114/MSBuild.dll",
+      local servers = {
+        lua_ls = {},
+        ts_ls = {},
+        html = {},
+        eslint = {
+          -- on_attach = function(_, bufnr)
+          --   -- auto-fix on save
+          --   vim.api.nvim_create_autocmd("BufWritePre", {
+          --     buffer = bufnr,
+          --     command = "EslintFixAll",
+          --   })
+          -- end,
         },
-        capabilities = capabilities
-      })
-      lspconfig.tailwindcss.setup({
-        capabilities = capabilities,
-        filetypes = {
-          "html",
-          "css",
-          "scss",
-          "javascript",
-          "javascriptreact",
-          "typescript",
-          "typescriptreact",
-          "vue",
-          "svelte",
+        csharp_ls = {
+          cmd_env = {
+            MSBUILD_EXE_PATH = "/usr/share/dotnet/sdk/8.0.114/MSBuild.dll",
+          },
         },
-        settings = {
-          tailwindCSS = {
-            validate = true,
-            lint = {
-              cssConflict = "warning",
-              invalidApply = "error",
-              invalidConfigPath = "error",
-              invalidScreen = "error",
-              invalidTailwindDirective = "error",
-              invalidVariant = "error",
+        tailwindcss = {
+          filetypes = {
+            "html",
+            "css",
+            "scss",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "svelte",
+          },
+          settings = {
+            tailwindCSS = {
+              validate = true,
+              lint = {
+                cssConflict = "warning",
+                invalidApply = "error",
+                invalidConfigPath = "error",
+                invalidScreen = "error",
+                invalidTailwindDirective = "error",
+                invalidVariant = "error",
+              },
             },
           },
         },
-      })
+      }
+      for name, opts in pairs(servers) do
+        opts.capabilities = capabilities
+        vim.lsp.config(name, opts)
+      end
+
+      vim.lsp.enable(vim.tbl_keys(servers))
 
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, {})

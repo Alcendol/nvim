@@ -24,5 +24,6 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.shell = '/usr/bin/fish'
 require("vim-options")
+require("vim-keymap")
 require("lazy").setup("plugins")
-print("Hello Mothafuckaaaa!!")
+require("vim-highlights")
